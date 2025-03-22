@@ -53,7 +53,7 @@ API创建网址 [百炼API](https://bailian.console.aliyun.com/?apiKey=1#/api-ke
 
 ## 📑检索增强生成——RAG（Retrieval Augmented Generation）
 
-![文件类型](https://img.shields.io/badge/PDF-≤20MB-blue) 
+![文件类型](https://img.shields.io/badge/PDF-≤10MB-blue) 
 - [x] ✅ RAG基础架构
 - [X] 🌐 多语言支持
 
