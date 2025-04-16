@@ -1,3 +1,5 @@
+import os
+
 import streamlit as st
 from langchain.memory import ConversationBufferMemory
 from utils.utils_1 import Creat_model
@@ -16,9 +18,19 @@ def set_temperature(tp):
         return 1.5
 
 
-st.title("✨Clone-Deepseek")
+st.title("✨通用聊天机器人")
 with st.sidebar:
-    open_api_key = st.text_input("请输入API密钥", type='password')
+    api_way = st.radio(
+        label="是否获取本地API环境变量",
+        options=('是', '否'),
+        index=1,
+        format_func=str,
+    )
+    if api_way == '是':
+        open_api_key = os.getenv("OPEN_API_KEY")
+    else:
+        open_api_key = st.text_input("请输入API密钥", type='password')
+
     st.markdown("[获取deepseek-API密钥](https://platform.deepseek.com/)")
     st.markdown("---")
     model_kind = st.selectbox("V3 | R1(深度思考)",
@@ -39,7 +51,7 @@ with st.sidebar:
 if "memory" not in st.session_state:
     st.session_state["memory"] = ConversationBufferMemory(return_messages=True)
     st.session_state["messages"] = [{"role": "ai",
-                                     "content": "我是deepseek，有疑问尽管找我😁"}]
+                                     "content": "我是一个聊天机器人，有疑问尽管找我😁"}]
 
 for message in st.session_state["messages"]:
     st.chat_message(message["role"]).write(message["content"])
@@ -47,7 +59,7 @@ for message in st.session_state["messages"]:
 prompt = st.chat_input("")
 
 if prompt:
-    if not open_api_key:
+    if api_way == '否' and not open_api_key:
         st.info("🔑请输入密钥！！")
         st.stop()
     st.session_state["messages"].append({"role": "human", "content": prompt})

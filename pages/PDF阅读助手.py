@@ -1,4 +1,5 @@
 import streamlit as st
+import os
 from langchain.memory import ConversationBufferMemory
 from utils.utils_2 import pdf_agent2
 from utils.utils_2 import retriever_back
@@ -12,7 +13,17 @@ st.title("🧾PDF阅读助手，问答工具")
 
 
 with st.sidebar:
-    tongyi_api_key = st.text_input("请输入阿里百炼API密钥：", type="password")
+    api_way = st.radio(
+        label="是否获取本地API环境变量",
+        options=('是', '否'),
+        index=1,
+        format_func=str,
+    )
+    if api_way == '是':
+        tongyi_api_key = os.getenv("DASHSCOPE_API_KEY")
+    else:
+        tongyi_api_key = st.text_input("请输入API密钥", type='password')
+
     st.markdown("[获取阿里百炼API密钥](https://bailian.console.aliyun.com/?apiKey=1#/api-keyw)")
     st.markdown("---")
     model_kind = st.selectbox(
@@ -40,7 +51,7 @@ if uploaded_file:
     retriever = retriever_back(uploaded_file, tongyi_api_key)
 
 
-if uploaded_file and question and not tongyi_api_key:
+if uploaded_file and question and not tongyi_api_key and api_way == '否':
     st.info("请输入你的百炼API密钥")
 if uploaded_file and question and tongyi_api_key:
     with st.spinner("AI助手看文档，请稍后....."):

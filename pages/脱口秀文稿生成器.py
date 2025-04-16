@@ -1,10 +1,21 @@
 import streamlit as st
+import os
 from utils.utils_3 import generate_script
 
 st.title("🎤脱口秀文本生成器")
 
 with st.sidebar:
-    deep_seek_key = st.text_input("请输入Deepseek密钥", type="password")
+    api_way = st.radio(
+        label="是否获取本地API环境变量",
+        options=('是', '否'),
+        index=1,
+        format_func=str,
+    )
+    if api_way == '是':
+        deep_seek_key = os.getenv("OPEN_API_KEY")
+    else:
+        deep_seek_key = st.text_input("请输入Deepseek密钥", type='password')
+
     model_kind = st.selectbox("选择模型, 默认为V3（Chat为V3模型 | reasoner为R1模型)",
                               ["deepseek-chat", "deepseek-reasoner"],
                               index=0)
@@ -18,7 +29,7 @@ creativity = st.slider("输入脱口秀文本的创造力（数字小更严谨�
 
 submit = st.button("生成脚本")
 
-if submit and not deep_seek_key:
+if submit and not deep_seek_key and api_way == '否':
     st.info("请输入你的deepseek API密钥")
     st.stop()
 if submit and not subject:
